@@ -2,10 +2,10 @@ import funcoes
 import formatacao
 
 
-formatação.cabeçalho('Menu')
+formatacao.cabeçalho('Menu')
 
 while True:
-    formatação.menu(['Adicionar movimento', 'Lstar movimentos', 'Total de entradas', 'Total de saídas', 'Saldo atual', 'Resumo financeiro', 'Sair'])
+    formatacao.menu(['Adicionar movimento', 'Lstar movimentos', 'Total de entradas', 'Total de saídas', 'Saldo atual', 'Resumo financeiro', 'Sair'])
     try:
         opcao = int(input('Digite uma opção '))
     except ValueError:

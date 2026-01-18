@@ -1,4 +1,5 @@
 from pathlib import Path
+import formatacao
 
 movimentos = Path(r'Controle Financeiro\Controle-Financeiro-CLI\movimentos.txt')
 
@@ -161,7 +162,7 @@ def resumo_financeiro():
     saidas = total_saidas()
     saldo =  calcular_saldo()
 
-    formatação.cabeçalho('\033[7mRESUMO FINANCEIRO\033[m')
+    formatacao.cabeçalho('\033[7mRESUMO FINANCEIRO\033[m')
 
     print(f'Total de entradas: \033[34m{entradas:>15.2f}\033[m')
     print(f'Total de saídas: \033[34m{saidas:>17.2f}\033[m')
