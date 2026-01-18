@@ -1,5 +1,4 @@
 from pathlib import Path
-import formatação
 
 movimentos = Path(r'Controle Financeiro\Controle-Financeiro-CLI\movimentos.txt')
 
@@ -24,7 +23,7 @@ def adicionar_movimento(data, descricao, valor, tipo):
 
     with movimentos.open('a', encoding='utf-8') as arquivo:
 
-        arquivo.write(f'{id_atual};{data};{descricao};{valor};{tipo}\n')
+        arquivo.write(f'{id_atual};{data};{descricao};{valor:.2f};{tipo}\n')
 
 
 def listar_movimento():
