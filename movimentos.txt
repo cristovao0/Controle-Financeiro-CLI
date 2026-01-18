@@ -1,0 +1,3 @@
+1;17/06/2026;salário;5000;entrada
+2;17/06/2026;recompensa;3000;entrada
+3;17/06/2026;mercado;1500;saida
