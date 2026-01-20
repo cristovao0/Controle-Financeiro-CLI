@@ -41,15 +41,19 @@ while True:
             funcoes.adicionar_movimento(data_operacao, descricao, valor, tipo_operacao)
 
         elif opcao == 2:
+            formatacao.cabeçalho('LISTAR MOVIMENTOS')
             funcoes.listar_movimento()
 
         elif opcao == 3:
+            formatacao.cabeçalho('TOTAL DE ENTRADAS')
             funcoes.total_entradas()
 
         elif opcao == 4:
+            formatacao.cabeçalho('TOTAL DE SAÍDAS')
             funcoes.total_saidas()
 
         elif opcao == 5:
+            formatacao.cabeçalho('SEU SALDO')
             funcoes.calcular_saldo()
         
         elif opcao == 6:
