@@ -2,21 +2,20 @@ from pathlib import Path
 import formatacao
 import json
 
-movimentos = Path(r'Controle Financeiro\Controle-Financeiro-CLI\movimentos.txt')
-movimentos_JSON  = Path(r'Controle Financeiro\Controle-Financeiro-CLI\movimentos_JSON.json')
+movimentos = Path(r'Controle Financeiro\Controle-Financeiro-CLI\movimentos.json')
 
 def checar_arquivo():
-    if not movimentos_JSON.exists():
-        movimentos_JSON.write_text('[]', encoding='utf-8')   
+    if not movimentos.exists():
+        movimentos.write_text('[]', encoding='utf-8')   
 
 
 def ler_dados():
     checar_arquivo()
-    return json.loads(movimentos_JSON.read_text(encoding='utf-8')) 
+    return json.loads(movimentos.read_text(encoding='utf-8')) 
 
 
 def salvar_dados(dados):
-    movimentos_JSON.write_text(
+    movimentos.write_text(
         json.dumps(dados, indent=2, ensure_ascii=False),
         encoding='utf-8'
     )
@@ -30,7 +29,7 @@ def adicionar_movimento(data, descricao, valor, tipo):
     tipo = tipo.strip().lower()
     
     # Le a lista atual JSON
-    dados = json.loads(movimentos_JSON.read_text(encoding='utf-8'))
+    dados = json.loads(movimentos.read_text(encoding='utf-8'))
 
     # gera um novo ID
     novo_id = 1
@@ -53,116 +52,67 @@ def adicionar_movimento(data, descricao, valor, tipo):
     # Adiciono transação a lista
     dados.append(transacao)
 
-    movimentos_JSON.write_text(json.dumps(dados, indent=2, ensure_ascii=False), encoding='utf-8')
+    movimentos.write_text(json.dumps(dados, indent=2, ensure_ascii=False), encoding='utf-8')
 
 
 
 def listar_movimento():
     checar_arquivo()
-    
+    formatacao.cabeçalho('Movimentos')
     dados = ler_dados()
+
+    print(f'{'ID':<6} {'DATA':<11} {'DESCRIÇÃO':<20} {'VALOR':>12} {'TIPO':>7}')
+    for l in dados:
+        id_atual = l['id']
+        data = l['data']
+        descricao = l['descricao']
+        valor = float(l['valor'])
+        valor_formatado = (f'R$ {valor:.2f}')
+        tipo = l['tipo']
+
+        
+        print(f'{id_atual:<6} {data:<11} {descricao:<20} {valor_formatado:>12} {tipo:>7}')
 
     
 
 def calcular_saldo():
-    checar_arquivo()
-    entradas = 0
-    saidas = 0
-    vazio = True
-    dados = []
+    
+    return total_entradas() - total_saidas()    
+
     
 
-    with movimentos.open('r', encoding='utf-8') as arquivo:
-        for linhas in arquivo:
-            linhas = linhas.strip()
-            if linhas == '':
-                continue
-
-            vazio = False
-            dados = linhas.split(';')
-            tipo_entrada = dados[4].strip().lower()
-            movimento = float(dados[3])
-
-            if tipo_entrada == 'entrada':
-                entradas += movimento
-            elif tipo_entrada == 'saida':
-                saidas += movimento
-        saldo = entradas - saidas
-        
-        if vazio:
-            print('Não existe nenhum movimento')
-            return 0.0
-        
-        return saldo
-       
-
 def total_entradas():
-    checar_arquivo()
-
-    vazio = True
+    
     entradas = 0.0
-    sem_entrada = True
 
-    with movimentos.open('r', encoding='utf-8') as arquivo:
-        for linhas in arquivo:
-            linhas = linhas.strip()
-            if linhas == '':
-                continue
+    dados = ler_dados()
 
-            vazio = False
-            dados = linhas.split(';')
-            tipo_entrada = dados[4].strip().lower()
-            movimento = float(dados[3])
+    for l in dados:
+        valor = float(l['valor'])
+        tipo = l['tipo'].strip().lower()
+        if tipo == 'entrada':
+            entradas += valor
 
-            if tipo_entrada == 'entrada':
-                entradas += movimento
-                sem_entrada = False
-            
-        if vazio:
-            print('Nenhuma movimentação encontrado.')
+    return entradas
 
-        if sem_entrada:
-            print('Nenhuma entrada encontrada')
-            return 0.0
-        else:
-            return entradas
-        
-
+    
 def total_saidas():
-    checar_arquivo()
-
-    vazio = True
+    
     saidas = 0.0
-    sem_saida = True
 
-    with movimentos.open('r', encoding='utf-8') as arquivo:
-        for linhas in arquivo:
-            linhas = linhas.strip()
-            if linhas == '':
-                continue
+    dados = ler_dados()
 
-            vazio = False
-            dados = linhas.split(';')
-            tipo_entrada = dados[4].strip().lower()
-            movimento = float(dados[3])
+    for l in dados:
+        valor = float(l['valor'])
+        tipo = l['tipo'].strip().lower()
+        if tipo == 'saida':
+            saidas += valor
 
-            if tipo_entrada == 'saida':
-                saidas += movimento
-                sem_saida = False
-            
-        if vazio:
-            print('Nenhuma movimentação encontrado.')
-
-        if sem_saida:
-            print('Nenhuma saida encontrada')
-            return 0.0
-        else:
-            return saidas
+    return saidas
         
 
 
 def resumo_financeiro():
-    checar_arquivo()
 
     entradas = total_entradas()
     saidas = total_saidas()
