@@ -14,6 +14,7 @@ while True:
     except KeyboardInterrupt:
         print('Programa encerrado pelo usuário')
         print('Volte sempre')
+        break
     else:
         if opcao == 1:
             data_operacao = str(input('Data da operação: ')).strip().lower()
