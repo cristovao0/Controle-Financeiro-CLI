@@ -10,4 +10,4 @@ def cabeçalho(texto):
 
 def menu(opcoes):
     for indice, conteudo in enumerate(opcoes):
-        print(f'{indice + 1} - {conteudo}')
+        print(f'\033[33m{indice + 1}\033[m - \033[34m{conteudo}\033[m')
