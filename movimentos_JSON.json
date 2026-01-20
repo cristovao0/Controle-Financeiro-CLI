@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "data": "17/06/1987",
+    "descricao": "presente",
+    "valor": 400.0,
+    "tipo": "saida"
+  },
+  {
+    "id": 2,
+    "data": "20/01/2026",
+    "descricao": "restaurante",
+    "valor": 200.0,
+    "tipo": "saida"
+  },
+  {
+    "id": 3,
+    "data": "19/01/2026",
+    "descricao": "salario",
+    "valor": 5000.0,
+    "tipo": "entrada"
+  }
+]

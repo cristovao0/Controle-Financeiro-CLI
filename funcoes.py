@@ -1,62 +1,68 @@
 from pathlib import Path
 import formatacao
+import json
 
 movimentos = Path(r'Controle Financeiro\Controle-Financeiro-CLI\movimentos.txt')
+movimentos_JSON  = Path(r'Controle Financeiro\Controle-Financeiro-CLI\movimentos_JSON.json')
 
 def checar_arquivo():
-    if not movimentos.exists():
-        movimentos.open('w').close()
-        
-        
+    if not movimentos_JSON.exists():
+        movimentos_JSON.write_text('[]', encoding='utf-8')   
+
+
+def ler_dados():
+    checar_arquivo()
+    return json.loads(movimentos_JSON.read_text(encoding='utf-8')) 
+
+
+def salvar_dados(dados):
+    movimentos_JSON.write_text(
+        json.dumps(dados, indent=2, ensure_ascii=False),
+        encoding='utf-8'
+    )
+
+
+   
 def adicionar_movimento(data, descricao, valor, tipo):
     checar_arquivo()
 
     descricao = descricao.strip().lower()
     tipo = tipo.strip().lower()
-    id_atual = 1
+    
+    # Le a lista atual JSON
+    dados = json.loads(movimentos_JSON.read_text(encoding='utf-8'))
 
-    with movimentos.open('r', encoding='utf-8') as arquivo:
-        
-        for linhas in arquivo:
-            linhas = linhas.strip()
-            if linhas != '':
-                id_atual += 1
+    # gera um novo ID
+    novo_id = 1
+    if len(dados) > 0:
+        maior = 0
+        for l in dados:
+            if int(l['id']) > maior:
+                maior = int(l['id'])
+            novo_id = maior + 1
 
-    with movimentos.open('a', encoding='utf-8') as arquivo:
+    # Criar transação
+    transacao = {
+        'id': novo_id,
+        'data': data,
+        'descricao': descricao,
+        'valor': float(valor),
+        'tipo': tipo
+    }
 
-        arquivo.write(f'{id_atual};{data};{descricao};{valor:.2f};{tipo}\n')
+    # Adiciono transação a lista
+    dados.append(transacao)
+
+    movimentos_JSON.write_text(json.dumps(dados, indent=2, ensure_ascii=False), encoding='utf-8')
+
 
 
 def listar_movimento():
     checar_arquivo()
-    vazio = True
+    
+    dados = ler_dados()
 
-    dados = []
-    with movimentos.open('r', encoding='utf-8') as arquivo:
-        for linhas in arquivo:
-            linhas = linhas.strip()
-
-            if linhas == '':
-                continue
-
-            dados.append(linhas.split(';'))
-            vazio = False
-                        
-        if vazio:
-            print('Nenhum movimento encontrado')
-        else:
-            print(f'{"ID":<6} {"DATA":<11} {"DESCRIÇÃO":<20} {"VALOR":>15} {"TIPO":>8}')
-
-            for linha in dados:
-                id_atual = linha[0]
-                data = linha[1]
-                descricao = linha[2]
-                valor = float(linha[3])
-                valor_formatado = f'R$ {valor:.2f}'
-                tipo = linha[4].strip()
-            
-                print(f'{id_atual:<6} {data:<11} {descricao:<20} {valor_formatado:>15} {tipo:>8}')
-
+    
 
 def calcular_saldo():
     checar_arquivo()
