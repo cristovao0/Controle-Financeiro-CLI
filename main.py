@@ -1,11 +1,13 @@
 import funcoes
 import formatacao
+import ControleFinanceiro
 
 
 formatacao.cabeçalho('Menu')
-
+ct = ControleFinanceiro.ControleFinanceiro(r'Controle Financeiro\Controle-Financeiro-CLI\movimentos.json')
 while True:
-    formatacao.menu(['Adicionar movimento', 'Lstar movimentos', 'Total de entradas', 'Total de saídas', 'Saldo atual', 'Resumo financeiro', 'Sair'])
+    
+    formatacao.menu(['Adicionar movimento', 'Listar movimentos', 'Total de entradas', 'Total de saídas', 'Saldo atual', 'Resumo financeiro', 'Sair'])
     try:
         opcao = int(input('Digite uma opção '))
     except ValueError:
@@ -38,26 +40,37 @@ while True:
                 if tipo_operacao == 'saída':
                     tipo_operacao = 'saida'
             
-            funcoes.adicionar_movimento(data_operacao, descricao, valor, tipo_operacao)
+            ct.adicionar_movimento(data_operacao, descricao, valor, tipo_operacao)
 
         elif opcao == 2:
             formatacao.cabeçalho('LISTAR MOVIMENTOS')
-            funcoes.listar_movimento()
+            ct.listar_movimentos()
 
         elif opcao == 3:
             formatacao.cabeçalho('TOTAL DE ENTRADAS')
-            funcoes.total_entradas()
+            total = ct.total_entradas()
+            print(f"Total de entradas: R$ {total:.2f}")
 
         elif opcao == 4:
             formatacao.cabeçalho('TOTAL DE SAÍDAS')
-            funcoes.total_saidas()
+            total = ct.total_saidas()
+            print(f"Total de saidas: R$ {total:.2f}")
 
         elif opcao == 5:
             formatacao.cabeçalho('SEU SALDO')
-            funcoes.calcular_saldo()
+            saldo = ct.calcular_saldo()
+            print(f"Saldo: R$ {saldo:.2f}")
         
         elif opcao == 6:
-            funcoes.resumo_financeiro()
+            resumo = ct.resumo_financeiro()
+            print('\033[7mRESUMO FINANCEIRO\033[m')
+            print(f"Total de entradas: \033[34m{resumo['entradas']:>15.2f}\033[m")
+            print(f"Total de saídas: \033[34m{resumo['saidas']:>17.2f}\033[m")
+
+            if resumo['saldo'] >= 0:
+                print(f"Saldo: \033[32m{resumo['saldo']:>27.2f}\033[m")
+            else:
+                print(f"Saldo: \033[31m{resumo['saldo']:>27.2f}\033[m")
 
         elif opcao == 7:
             print('Volte sempre!!!')
